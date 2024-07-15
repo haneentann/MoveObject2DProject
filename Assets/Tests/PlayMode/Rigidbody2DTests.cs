@@ -6,11 +6,16 @@ using System.Collections;
 public class Rigidbody2DTests
 {
     private GameObject testObject;
+    private MoveObject moveObjectScript;
     private Rigidbody2D rb2D;
 
     [UnitySetUp]
     public IEnumerator SetUp()
     {
+        // Create a new GameObject and attach the MoveObject script
+        testObject = new GameObject("TestObject");
+        moveObjectScript = testObject.AddComponent<MoveObject>();
+
         // Create a new GameObject and add a Rigidbody2D component
         testObject = new GameObject("TestObjectWithRigidbody");
         rb2D = testObject.AddComponent<Rigidbody2D>();
@@ -18,6 +23,8 @@ public class Rigidbody2DTests
         // Ensure the Rigidbody2D is set up correctly
         rb2D.gravityScale = 0; // Disable gravity for the test
 
+        moveObjectScript.direction = Vector2.right;
+        moveObjectScript.speed = 1.0f;
         yield return null;
     }
 

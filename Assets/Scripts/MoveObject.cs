@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MoveObject : MonoBehaviour
@@ -13,6 +14,9 @@ public class MoveObject : MonoBehaviour
 
     //phase5
     private Vector3 initialPosition;
+    
+    //phase 6
+    private float normalSpeed;
 
 
     //Phase2 
@@ -25,6 +29,13 @@ public class MoveObject : MonoBehaviour
         }
         //phase 5
         initialPosition = transform.position;
+        //phase 6
+        normalSpeed = speed;
+        Debug.Log("Start Log!");
+        //phase2
+        ChangeColor(Color.red);
+
+
     }
 
     //Phase1
@@ -37,20 +48,19 @@ public class MoveObject : MonoBehaviour
         }
         //phase1 uncomment 
         //transform.Translate(direction * speed * Time.deltaTime);
-        //phase2
-     //   ChangeColor(Color.red);
-
+      
         //Phases3
         // Change scale based on movement
-        if (spriteRenderer != null)
+       /* if (spriteRenderer != null)
         {
             float newScaleX = Mathf.Abs(direction.x) > 0 ? Mathf.Abs(direction.x) * 2 : 1;
             float newScaleY = Mathf.Abs(direction.y) > 0 ? Mathf.Abs(direction.y) * 2 : 1;
             transform.localScale = new Vector3(newScaleX, newScaleY, 1);
-        }
+        }*/
 
         //phase4
         HandleInput();
+    //    Debug.Log("Update Log!");
 
     }
     //Phase2
@@ -59,6 +69,7 @@ public class MoveObject : MonoBehaviour
         if (spriteRenderer != null)
         {
             spriteRenderer.color = newColor;
+            //Debug.Log("Color Changed Log!");
         }
     }
 
@@ -85,6 +96,16 @@ public class MoveObject : MonoBehaviour
         {
             direction = -direction;
         }
+        //phase 6
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            StartCoroutine(SpeedBoost());
+        }
+        //phase 7
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RotateObject();
+        }
     }
     //phase 5
     public void ResetPosition()
@@ -98,8 +119,40 @@ public class MoveObject : MonoBehaviour
             spriteRenderer.enabled = !spriteRenderer.enabled;
         }
     }
+
+    //phase 6
+    //Coroutine
+    public IEnumerator SpeedBoost()
+    {
+        speed *= 2;
+        yield return new WaitForSeconds(2.0f);
+        speed = normalSpeed;
+    }
+    public void SimulateSpeedBoost()
+    {
+        StartCoroutine(SpeedBoost());
+    }
+
+    //phase 7 Rotate Object on R Click
+    public void RotateObject()
+    {
+        transform.Rotate(0, 0, 90);
+    }
+    //phase8 - Collision detection and state change
+    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("OnCollisionEnter2D is Entered");
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            ChangeColor(Color.blue);
+            ChangeSpeed(0);
+        }
+    }   
     public void ChangeSpeed(float newSpeed)
     {
         speed = newSpeed;
     }
+
 }
